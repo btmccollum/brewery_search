@@ -1,7 +1,16 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
+
+require_relative "./brewery_search/version.rb"
+require_relative "./brewery_search/cli.rb"
+require_relative "./brewery_search/brewery.rb"
+require_relative "./brewery_search/scraper.rb"
+
 require "brewery_search"
+require 'nokogiri'
+require 'pry'
+
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
