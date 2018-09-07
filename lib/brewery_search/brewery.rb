@@ -1,6 +1,6 @@
 class BrewerySearch::Brewery
 
-    attr_accessor :name, :city, :state, :address, :url, :external_site, :facebook_link, :twitter_link, :insta_link
+    attr_accessor :name, :city, :state, :address, :type, :url, :external_site, :facebook_link, :twitter_link, :insta_link
 
     @@all = []
     
