@@ -27,23 +27,13 @@ class BrewerySearch::Scraper
             page += 1
         end 
 
-        #creates a collection hashes for each entry from the page
-        # pages.each do |page|
-        #     page.css("table.breweries-list tbody tr").each do |brewery|
-        #         brewery_list << {
-        #         :name => brewery.css("td a.accented.hidden-mobile.bold").text.strip,
-        #         :city => brewery.css("td.hidden-mobile").first.text.strip,
-        #         :state => input,
-        #         :site_url => brewery.css("td a.accented.hidden-mobile.bold").attr("href").text.strip,
-        #         :type => brewery.css("td.hidden-mobile")[1].text.strip
-        #         }
-        #     end
-        # end
-        # @brewery_list = brewery_list
-        # @state = input
-        # @pages = pages
         @@all << state_object
         state_object
+    end
+
+    #it will accept a url for a brewery's profile on the page, and scrape additional details to be displayed when requested
+    def self.scrape_by_profile(input)
+        doc = Nokogiri::HTML(open("https://www.brewbound.com#{input}"))
     end
 
     def self.all
