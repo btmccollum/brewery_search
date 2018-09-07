@@ -1,0 +1,4 @@
+example_id                         | status  | run_time |
+---------------------------------- | ------- | -------- |
+./spec/brewery_search_spec.rb[1:1] | unknown |          |
+./spec/brewery_search_spec.rb[1:2] | unknown |          |
