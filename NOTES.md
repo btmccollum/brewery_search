@@ -28,3 +28,17 @@ Website to scrape: https://www.brewbound.com/breweries
             2) Quit
 
 2
+
+ # #examples:
+        # brew_1 = self.new
+        # brew_1.name = "Deep Ellum Brewing Co."
+        # brew_1.city = "Dallas"
+        # brew_1.state = "TX"
+        # brew_1.address = "2823 St. Louis St." 
+        # brew_1.url = "deepellumbrewing.com"
+        # brew_1.facebook_link = "www.facebook.com/deepellumbrewing"
+        # brew_1.twitter_link = "www.twitter.com/deepellumbrewing"
+        # brew_1.instagram_link = "www.instagram.com/deepellumbrewing"
+
+        # hash = {:name => "Deep Ellum Brewing Co.", :city => "Dallas", :state => "TX", :address => "2823 St. Louis St.", :url => "deepellumbrewing.com", :facebook_link => "www.facebook.com/deepellumbrewing", :twitter_link => "www.twitter.com/deepellumbrewing", :insta_link => "www.instagram.com/deepellumbrewing"}
+# a = BrewerySearch::Brewery.create_from_hash(hash)

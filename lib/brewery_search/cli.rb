@@ -40,7 +40,7 @@ class BrewerySearch::CLI
         BrewerySearch::Scraper.scrape_from_results(input)
 
         list_breweries
-        
+
         self.menu
     end
 
@@ -56,11 +56,13 @@ class BrewerySearch::CLI
         DOC
     end
 
+    #will return a of breweries in the specified city
     def breweries_by_city(city)
 
     end
 
     #it will provide the user with a list of options for the breweries returned by #list_breweries
+    #will look to change case/when to an if/else to cut down on amount of code
     def menu
         puts "\nPlease enter the number of a brewery for additional information.\nYou can type 'list' to see the breweries again or 'exit' to quit."
         puts "If you would like to filter by a specific city, please type the name of that city."
