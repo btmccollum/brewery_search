@@ -2,8 +2,10 @@
 
 class BrewerySearch::CLI
 
+    VALID_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "TN", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+
     #launches the CLI and greets the user with a welcome screen, prompts user to enter a state to search
-    def start
+    def welcome_screen
         puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
         puts "                      ..,,,,,,...   .. .. .  ..              "     
         puts "                      (#                       *             "
@@ -31,29 +33,40 @@ class BrewerySearch::CLI
         puts "                      , ./***             ,,,*./             "
         puts "                      , /..             .**...//             "
         puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
-        puts " To begin, please enter the state that you'd like to search: "
+        
+        self.start
+    end
 
+    def start
         input = nil
+
+        puts " To begin, please enter the state that you'd like to search: "
+        
         input = gets.strip
-
-        #method to scrape a specific state that matches the users input
-        BrewerySearch::Scraper.scrape_from_results(input)
-
-        list_breweries
+        
+            if VALID_STATES.include?(input)
+                list_breweries(input)
+            else 
+                puts "Invalid entry, please enter a valid state."
+            end
 
         self.menu
+                
     end
 
     #it will return a list of breweries from the state specified by the user, in alphabetical order
-    def list_breweries
+    def list_breweries(input)
         # here doc https://www.brewbound.com/breweries
-        puts <<-DOC.gsub /^\s*/, ''
-            1. (405) Brewing Co -- Norman, OK -- N/A
-            2. (512) Brewing Co -- Austin, TX -- N/A
-            3. 101 Brewery -- Quilcene, WA -- Brewpub
-            4. 101 Ciderhouse -- N/A -- Production - Micro
-            5. 101 North Brewing Company -- Petaluma, CA -- Production - Micro
-        DOC
+        # puts <<-DOC.gsub /^\s*/, ''
+        #     1. (405) Brewing Co -- Norman, OK -- N/A
+        #     2. (512) Brewing Co -- Austin, TX -- N/A
+        #     3. 101 Brewery -- Quilcene, WA -- Brewpub
+        #     4. 101 Ciderhouse -- N/A -- Production - Micro
+        #     5. 101 North Brewing Company -- Petaluma, CA -- Production - Micro
+        # DOC
+        BrewerySearch::Brewery.create_from_state_scrape(input)
+
+        puts "1. #{BrewerySearch::Brewery.all[0].name} -- #{BrewerySearch::Brewery.all[0].city}, #{BrewerySearch::Brewery.all[0].state} -- #{BrewerySearch::Brewery.all[0].type != "" ? BrewerySearch::Brewery.all[0].type : "N/A" }"
     end
 
     #will return a of breweries in the specified city

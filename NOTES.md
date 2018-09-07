@@ -42,3 +42,20 @@ Website to scrape: https://www.brewbound.com/breweries
 
         # hash = {:name => "Deep Ellum Brewing Co.", :city => "Dallas", :state => "TX", :address => "2823 St. Louis St.", :url => "deepellumbrewing.com", :facebook_link => "www.facebook.com/deepellumbrewing", :twitter_link => "www.twitter.com/deepellumbrewing", :insta_link => "www.instagram.com/deepellumbrewing"}
 # a = BrewerySearch::Brewery.create_from_hash(hash)
+
+
+#creates a collection hashes for each entry from the page
+        # pages.each do |page|
+        #     page.css("table.breweries-list tbody tr").each do |brewery|
+        #         brewery_list << {
+        #         :name => brewery.css("td a.accented.hidden-mobile.bold").text.strip,
+        #         :city => brewery.css("td.hidden-mobile").first.text.strip,
+        #         :state => input,
+        #         :site_url => brewery.css("td a.accented.hidden-mobile.bold").attr("href").text.strip,
+        #         :type => brewery.css("td.hidden-mobile")[1].text.strip
+        #         }
+        #     end
+        # end
+        # @brewery_list = brewery_list
+        # @state = input
+        # @pages = pages
