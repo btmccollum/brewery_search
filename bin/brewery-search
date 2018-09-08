@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
 require "./lib/brewery_search"
 
-BrewerySearch::CLI.new.call_options
-
-
-
+BrewerySearch::CLI.new.welcome_screen

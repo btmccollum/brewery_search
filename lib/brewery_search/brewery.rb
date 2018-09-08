@@ -1,5 +1,3 @@
-require 'pry'
-
 class BrewerySearch::Brewery
     attr_accessor :name, :city, :state, :address, :phone, :type, :overview, :site_url, :external_site, :facebook_link, :twitter_link, :insta_link, :youtube_link
     attr_reader :pages, :brewery_list
@@ -17,6 +15,7 @@ class BrewerySearch::Brewery
                 new_brewery.site_url = info.css("td a.accented.hidden-mobile.bold").attr("href").text.strip
                 new_brewery.type = info.css("td.hidden-mobile")[1].text.strip
                 @@all << new_brewery
+                search_state.brewery_list << new_brewery
             end
         end
         @@all.sort_by! {|brewery| brewery.name}
