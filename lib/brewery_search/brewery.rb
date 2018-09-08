@@ -1,16 +1,12 @@
 require 'pry'
 
 class BrewerySearch::Brewery
-
-    attr_accessor :name, :city, :state, :address, :phone, :type, :site_url, :external_site, :facebook_link, :twitter_link, :insta_link, :youtube_link
+    attr_accessor :name, :city, :state, :address, :phone, :type, :overview, :site_url, :external_site, :facebook_link, :twitter_link, :insta_link, :youtube_link
     attr_reader :pages, :brewery_list
 
     @@all = []
 
     def self.create_from_state_scrape(input)
-        # if BrewerySearch::Scraper.all.find do |x|
-        #     if x.state == input
-
         search_state = BrewerySearch::Scraper.scrape_by_state(input)
         search_state.pages.each do |page|
             page.css("table.breweries-list tbody tr").each do |info|
@@ -28,9 +24,14 @@ class BrewerySearch::Brewery
 
     #creates additional information from the breweries individual page entry only when called for
     def create_profile_attributes
-        # brewery = BrewerySearch::Brewery.all.find {|brewery| brewery.name == input}
         profile = BrewerySearch::Scraper.scrape_by_profile(self.site_url)
         
+        if profile.css("div #overview dl dd")[2] != "Unknown"
+            profile.css("div #overview dl dd a").attr("href").text.gsub(/\bhttps:.*=+./, '')
+        end
+
+        self.overview = profile.css("div #overview dl dd")[3].text
+
         if profile.css("div.contact dt")[1].text == "Phone"
             self.phone = profile.css("div.contact dd")[1].text
         end

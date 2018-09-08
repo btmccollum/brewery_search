@@ -2,7 +2,6 @@ require 'nokogiri'
 require 'open-uri'
 
 class BrewerySearch::Scraper
-
     attr_accessor :state, :pages, :brewery_list
 
     #will be a collection of scraped states that can be reused to prevent a state from potentially being re-scraped
