@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["btmccollum"]
   spec.email         = ["btmcco8@gmail.com"]
 
-  spec.summary       = "Allows a user to search for breweries by state by utilizing the www.brewbound.com collection of national breweries."
-  # spec.description   = %q{TODO: Write a longer description or delete this line.}
+  spec.summary       = "A CLI brewery directory leveraging BrewBound"
+  spec.description   = "Allows a user to search for breweries by state by utilizing the www.brewbound.com brewery database. A user can filter by city and obtain additional info about any entry."
   spec.homepage      = "https://github.com/btmccollum/brewery_search"
   spec.license       = "MIT"
 
@@ -35,4 +35,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "nokogiri", "~> 1.8", ">= 1.8.4"
+  spec.add_development_dependency "launchy", "~> 2.4", ">= 2.4.3"
+  spec.add_development_dependency "require_all", "~> 2.0"
+  spec.add_dependency "nokogiri", "~> 1.8", ">= 1.8.4"
+  spec.add_dependency "launchy", "~> 2.4", ">= 2.4.3"
+  spec.add_dependency "bundler", "~> 1.16"
+  spec.add_dependency "require_all", "~> 2.0"
+  
 end

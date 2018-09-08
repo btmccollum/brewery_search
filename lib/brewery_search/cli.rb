@@ -106,6 +106,7 @@ class BrewerySearch::CLI
         puts "If you would like to filter by a specific city, please type 'city'."
     end
 
+    #usuable only from #menu, has to be able to recall the previously used state
     def state_result_call(input)
             brewery = @last_brew_list_searched[input.to_i - 1]
             puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
@@ -127,6 +128,7 @@ class BrewerySearch::CLI
             puts "to return, or 'exit' if you'd like to quit."
     end
 
+    #usable only from #city_menu, has to be able to recall the previously used city as to not interrupt flow
     def city_result_call(input)
         brewery = @last_city_list_searched[input.to_i - 1]
             puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"

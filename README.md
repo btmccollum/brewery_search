@@ -1,8 +1,6 @@
 # BrewerySearch
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/brewery_search`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+BrewerySearch provides a CLI that allows a user to navigate BrewBound's brewery database and retrieve additional information such as contact information, social media links, general overview, and more.
 
 ## Installation
 
@@ -22,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Type the following to get started:
+
+    $ brewery-search
+
+Follow the on-screen prompts to continue.
+
+Users will have the ability to search by state abbreviations (case senstitive). From there a user will be presented with a list of all registered breweries in that state. A user can call 
+
+    $ city 
+
+to receive a prompt to filter by a specific city, otherwise they can select the number of any brewery for more information.
 
 ## Development
 
