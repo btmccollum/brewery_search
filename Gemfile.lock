@@ -4,7 +4,7 @@ PATH
     brewery_search (0.1.0)
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
@@ -50,4 +50,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   1.16.2
+   1.16.4

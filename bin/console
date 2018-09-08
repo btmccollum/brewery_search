@@ -2,6 +2,7 @@
 
 require "bundler/setup"
 require "./config/environment.rb"
+require "brewery_search"
 
 require "irb"
 IRB.start(__FILE__)

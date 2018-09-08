@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "./config/environment.rb"
+# require "bundler/setup"
+# require "./config/environment.rb"
+require_relative "../lib/brewery_search"
 
 BrewerySearch::CLI.new.welcome_screen
