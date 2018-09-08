@@ -120,11 +120,27 @@ class BrewerySearch::CLI
             puts "  Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
             puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
 
-            puts "Would you like to continue? (y/n)"
-            input = gets.strip.downcase
-                if input == "y"
+            puts "You can say 'Website', 'Facebook', 'Twitter', 'Instagram', or 'Youtube'
+                  to visit the webpage. Otherwise say 'menu' if you'd like to return, or
+                  'exit' if you'd like to quit."
+            # puts "Would you like to continue? (y/n)"
+            input = gets.strip
+                if input == "Website"
+                    Launchy.open("#{brewery.external_site}")
                     self.menu
-                elsif input == "n"
+                elsif input == "Facebook"
+                    Launchy.open("#{brewery.facebook_link}")
+                    self.menu
+                elsif input == "Twitter"
+                    Launchy.open("#{brewery.twitter_link}")
+                    self.menu
+                elsif input == "Instagram"
+                    Launchy.open("#{brewery.insta_link}")
+                    self.menu
+                elsif input == "Youtube"
+                    Launchy.open("#{brewery.youtube_link}")
+                    self.menu
+                elsif input == "exit"
                     self.quit
                 else
                     self.menu
@@ -164,25 +180,39 @@ class BrewerySearch::CLI
             puts "  Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
             puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
 
-            puts "Would you like to look at information for another brewery in this city? (y/n)"
-            puts "Otherwise, you can enter 'back' to return to your previous search."
-            input = gets.strip.downcase
-                if input == "y"
+            puts "You can say 'Website', 'Facebook', 'Twitter', 'Instagram', or 'Youtube'
+                  to visit the page. Otherwise say 'menu' if you'd like to return, or
+                  'exit' if you'd like to quit."
+            # puts "Would you like to continue? (y/n)"
+            input = gets.strip
+                if input == "Website"
+                    Launchy.open("#{brewery.external_site}")
+                    self.menu
+                elsif input == "Facebook"
+                    Launchy.open("#{brewery.facebook_link}")
+                    self.menu
+                elsif input == "Twitter"
+                    Launchy.open("#{brewery.twitter_link}")
+                    self.menu
+                elsif input == "Instagram"
+                    Launchy.open("#{brewery.insta_link}")
+                    self.menu
+                elsif input == "Youtube"
+                    Launchy.open("#{brewery.youtube_link}")
                     self.city_menu
-                elsif input == "n"
+                elsif input == "exit"
                     self.quit
-                #current issue: successfully runs #list_breweries but returns the entire array and terminates the program
-                # elsif input == "back"
-                    # self.list_breweries(@last_searched_state)
                 else
                     self.menu
                 end
         elsif input == "new search"
             self.start
+        elsif input == "city"
+            self.breweries_by_city
         elsif input == exit
             self.quit
         else
-            "Invalid entry received. Please select a number, 'new search', or 'exit'."
+            "Invalid entry received. Please select a number, 'city', 'new search', or 'exit'."
         end
     end
 
