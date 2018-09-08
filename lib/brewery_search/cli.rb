@@ -1,9 +1,11 @@
 #CLI Controller
-
 class BrewerySearch::CLI
 
     VALID_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "TN", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
     last_searched_state = nil
+    last_searched_city = nil
+    last_brew_list_searched = nil
+    last_city_list_searched = nil
 
     #launches the CLI and greets the user with a welcome screen, prompts user to enter a state to search
     def welcome_screen
@@ -41,7 +43,7 @@ class BrewerySearch::CLI
     def start
         input = nil
 
-        puts " To begin, please enter the state that you'd like to search: "
+        puts " Please enter the state abbreviation that you'd like to search: "
         
         input = gets.strip
         @last_searched_state = input
@@ -52,23 +54,25 @@ class BrewerySearch::CLI
                 puts "Invalid entry, please enter a valid state."
             end
 
-        self.menu
-                
+        self.menu    
     end
 
-    #it will return a list of breweries from the state specified by the user, in alphabetical order
+    #it will return a list of breweries from the state specified by the user, in alphabetical order by Brewery name
     def list_breweries(input)
-        BrewerySearch::Brewery.create_from_state_scrape(input)
+        state_listing = nil
 
-        state_listing = BrewerySearch::Brewery.all.select {|x| x.state == input}
-
-        number = 0
+        #checks the scraper class variable to ensure the state hasnt already been scraped to avoid unnecessary scraping
+        if BrewerySearch::Scraper.all.any? {|entry| entry.state == input}
+            state_listing = BrewerySearch::Brewery.all.select {|entry| entry.state == input}
+            @last_brew_list_searched = state_listing
+        else
+            state_listing = BrewerySearch::Brewery.create_from_state_scrape(input) 
+            @last_brew_list_searched = state_listing
+        end
         
         puts "Displaying results:"
-        while number < state_listing.count
-            puts "   #{number + 1}. #{state_listing[number].name} -- #{state_listing[number].city}, #{state_listing[number].state} -- #{state_listing[number].type != "" ? state_listing[number].type : "N/A" }"
-            number += 1
-        end
+
+        state_listing.each_with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
     end
 
     #will return a of breweries in the specified city
@@ -77,79 +81,109 @@ class BrewerySearch::CLI
 
         puts "Please enter the name of the city you would like to filter by:"
         input = gets.strip
-
-        number = 0
         
-        state_listing = BrewerySearch::Brewery.all.select {|x| x.state == @last_searched_state}
+        # state_listing = BrewerySearch::Brewery.all.select {|brewery| brewery.state == @last_searched_state}
+        state_listing = @last_brew_list_searched
         city_listing = state_listing.select {|brewery| brewery.city == input && brewery.state == @last_searched_state}
+        @last_city_list_searched = city_listing
         
         puts "Displaying results:"
-        while number < city_listing.count
-            puts "   #{number + 1}. #{city_listing[number].name} -- #{city_listing[number].city}, #{city_listing[number].state} -- #{city_listing[number].type != "" ? city_listing[number].type : "N/A" }"
-            number += 1
-        end
-        
-        self.menu
+
+        city_listing.each_with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
+
+        self.city_menu
     end
 
     #it will provide the user with a list of options for the breweries returned by #list_breweries
     #will look to change case/when to an if/else to cut down on amount of code
     def menu
-        puts "\nPlease enter the number of a brewery for additional information.\nYou can type 'list' to see the breweries again or 'exit' to quit."
+        puts "\nPlease enter the number of a brewery for additional information.\nYou can type 'new search' to search again or 'exit' to quit."
         puts "If you would like to filter by a specific city, please type 'city'."
+
         input = nil
-        while input != "exit"
-            input = gets.strip
-            case input
-            when "1"
-                BrewerySearch::Brewery
-            when "2" 
-                puts "More info on brewery 2"
-            when "3"
-                puts "more info on brewery 3"
-            when "4"
-                puts "more info on brewery 4"
-            when "5"
-                puts "more info on brewery 5"
-            when "6"
-                puts "more info on brewery 5"
-            when "7"
-                puts "more info on brewery 5"
-            when "8"
-                puts "more info on brewery 5"
-            when "8"
-                puts "more info on brewery 5"
-            when "10"
-                puts "more info on brewery 5"
-            when "11"
-                puts "more info on brewery 5"
-            when "12"
-                puts "more info on brewery 5"
-            when "13"
-                puts "more info on brewery 5"
-            when "14"
-                puts "more info on brewery 5"
-            when "15"
-                puts "more info on brewery 5"
-            when "16"
-                puts "more info on brewery 5"
-            when "17"
-                puts "more info on brewery 5"
-            when "18"
-                puts "more info on brewery 5"
-            when "19"
-                puts "more info on brewery 5"
-            when "20"
-                puts "more info on brewery 5"
-            when "city"
-                breweries_by_city
-            when "list"
-                list_breweries
-            else
-                puts "Invalid entry received. Please type list or exit."
-            end
+        input = gets.strip
+
+        if input.to_i > 0
+            brewery = @last_brew_list_searched[input.to_i - 1]
+            brewery.create_profile_attributes
+          
+            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
+            puts "  Brewery Name: #{brewery.name}"
+            puts "  Brewery Address: #{brewery.address != nil ? brewery.address : "N/A"}"
+            puts "  Brewery Location: #{brewery.city}, #{brewery.state}"
+            puts "  Brewery Phone #: #{brewery.phone != nil ? brewery.phone : "N/A"}"
+            puts "  Brewery Type: #{brewery.type != "" ? brewery.type : "N/A" }"
+            puts "  Brewery Website: #{brewery.external_site != nil ? brewery.external_site : "N/A" }"
+            puts "  Brewery Facebook: #{brewery.facebook_link != nil ? brewery.facebook_link : "N/A" }"
+            puts "  Brewery Twitter: #{brewery.twitter_link != nil ? brewery.twitter_link : "N/A" }"
+            puts "  Brewery Instagram: #{brewery.insta_link != nil ? brewery.insta_link : "N/A" }"
+            puts "  Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
+            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
+
+            puts "Would you like to continue? (y/n)"
+            input = gets.strip.downcase
+                if input == "y"
+                    self.menu
+                elsif input == "n"
+                    self.quit
+                else
+                    self.menu
+                end
+        elsif input == "new search"
+            self.start
+        elsif input == "city"
+            self.breweries_by_city
+        elsif input == exit
+            self.quit
+        else
+            "Invalid entry received. Please select a number, 'city', 'new search', or 'exit'."
         end
-        self.quit
+    end
+
+    def city_menu
+        puts "\nPlease enter the number of a brewery for additional information.\nYou can type 'new search' to search again or 'exit' to quit."
+        puts "If you would like to filter by a specific city, please type 'city'."
+
+        input = nil
+        input = gets.strip
+
+        if input.to_i > 0
+            brewery = @last_city_list_searched[input.to_i - 1]
+            brewery.create_profile_attributes
+          
+            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
+            puts "  Brewery Name: #{brewery.name}"
+            puts "  Brewery Address: #{brewery.address != nil ? brewery.address : "N/A"}"
+            puts "  Brewery Location: #{brewery.city}, #{brewery.state}"
+            puts "  Brewery Phone #: #{brewery.phone != nil ? brewery.phone : "N/A"}"
+            puts "  Brewery Type: #{brewery.type != "" ? brewery.type : "N/A" }"
+            puts "  Brewery Website: #{brewery.external_site != nil ? brewery.external_site : "N/A" }"
+            puts "  Brewery Facebook: #{brewery.facebook_link != nil ? brewery.facebook_link : "N/A" }"
+            puts "  Brewery Twitter: #{brewery.twitter_link != nil ? brewery.twitter_link : "N/A" }"
+            puts "  Brewery Instagram: #{brewery.insta_link != nil ? brewery.insta_link : "N/A" }"
+            puts "  Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
+            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
+
+            puts "Would you like to look at information for another brewery in this city? (y/n)"
+            puts "Otherwise, you can enter 'back' to return to your previous search."
+            input = gets.strip.downcase
+                if input == "y"
+                    self.city_menu
+                elsif input == "n"
+                    self.quit
+                #current issue: successfully runs #list_breweries but returns the entire array and terminates the program
+                # elsif input == "back"
+                    # self.list_breweries(@last_searched_state)
+                else
+                    self.menu
+                end
+        elsif input == "new search"
+            self.start
+        elsif input == exit
+            self.quit
+        else
+            "Invalid entry received. Please select a number, 'new search', or 'exit'."
+        end
     end
 
     #it will terminate the program if the user so chooses
