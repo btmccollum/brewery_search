@@ -25,12 +25,18 @@ class BrewerySearch::Brewery
     def create_profile_attributes
         profile = BrewerySearch::Scraper.scrape_by_profile(self.site_url)
         
-        if profile.css("div #overview dl dd")[2] != "Unknown"
-            profile.css("div #overview dl dd a").attr("href").text.gsub(/\bhttps:.*=+./, '')
+        if profile.css("div #overview dl dd")[0].text.include?("JOB")
+            self.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=+./, '')
+        else
+            self.address = profile.css("div #overview dl dd")[2].css("a").attr("href").text.gsub(/\bhttps:.*=+./, '')
         end
 
-        self.overview = profile.css("div #overview dl dd")[3].text
-
+        if profile.css("div #overview dl dd")[0].text.include?("JOB")
+            self.overview = profile.css("div #overview dl dd")[4].text
+        else
+            self.overview = profile.css("div #overview dl dd")[3].text
+        end
+        
         if profile.css("div.contact dt")[1].text == "Phone"
             self.phone = profile.css("div.contact dd")[1].text
         end
