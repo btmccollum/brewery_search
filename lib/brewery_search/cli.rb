@@ -136,7 +136,6 @@ class BrewerySearch::CLI
             puts "to return, or 'exit' if you'd like to quit."
     end
     
-
     #it will provide the user with a list of options for the breweries returned by #list_breweries
     def menu
         self.options_call
