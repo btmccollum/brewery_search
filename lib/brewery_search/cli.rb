@@ -64,19 +64,20 @@ class BrewerySearch::CLI
     #it will return a list of breweries from the state specified by the user, in alphabetical order by Brewery name
     def list_breweries(input)
         state_listing = nil
-
+      
         #checks the scraper class variable to ensure the state hasnt already been scraped to avoid unnecessary scraping
         if BrewerySearch::Scraper.all.any? {|entry| entry.state == input}
             state_listing = BrewerySearch::Brewery.all.select {|entry| entry.state == input}
             @last_brew_list_searched = state_listing
         else
-            state_listing = BrewerySearch::Brewery.create_from_state_scrape(input) 
+            BrewerySearch::Brewery.create_from_state_scrape(input)
+            state_listing = BrewerySearch::Brewery.all.select {|entry| entry.state == input}
             @last_brew_list_searched = state_listing
         end
-        
+   
         puts "Displaying results:"
 
-        state_listing.each_with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
+        @last_brew_list_searched.each_with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
     end
 
     #will return a of breweries in the specified city
