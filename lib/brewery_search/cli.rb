@@ -103,31 +103,20 @@ class BrewerySearch::CLI
         puts "If you would like to filter by a specific city, please type 'city'."
     end
 
-    #usuable only from #menu, has to be able to recall the previously used state
+    #usuable only from #menu, serves to correctly fork for state searches
     def state_result_call(input)
             brewery = @last_brew_list_searched[input.to_i - 1]
-            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
-            puts "Brewery Name: #{brewery.name}"
-            puts "Brewery Address: #{brewery.address != nil ? brewery.address : "N/A"}"
-            puts "Brewery Location: #{brewery.city}, #{brewery.state}"
-            puts "Brewery Phone #: #{brewery.phone != nil ? brewery.phone : "N/A"}"
-            puts "Brewery Type: #{brewery.type != "" ? brewery.type : "N/A" }"
-            puts "Brewery Website: #{brewery.external_site != nil ? brewery.external_site : "N/A" }"
-            puts "Brewery Facebook: #{brewery.facebook_link != nil ? brewery.facebook_link : "N/A" }"
-            puts "Brewery Twitter: #{brewery.twitter_link != nil ? brewery.twitter_link : "N/A" }"
-            puts "Brewery Instagram: #{brewery.insta_link != nil ? brewery.insta_link : "N/A" }"
-            puts "Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
-            puts ""
-            puts "Brewery Overview: #{brewery.overview}"
-            puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
-            puts "You can say 'Website', 'Facebook', 'Twitter', 'Instagram', or"
-            puts "'Youtube' to visit the page. Otherwise say 'menu' if you'd like"
-            puts "to return, or 'exit' if you'd like to quit."
+            self.ind_brewery_info(brewery)
     end
 
-    #usable only from #city_menu, has to be able to recall the previously used city as to not interrupt flow
+    #usable only from #city_menu, serves to correctly fork for city searches
     def city_result_call(input)
         brewery = @last_city_list_searched[input.to_i - 1]
+        self.ind_brewery_info(brewery)
+    end
+
+    #returns an info sheet for a given brewery
+    def ind_brewery_info(brewery)
             puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
             puts "Brewery Name: #{brewery.name}"
             puts "Brewery Address: #{brewery.address != nil ? brewery.address : "N/A"}"
@@ -146,6 +135,7 @@ class BrewerySearch::CLI
             puts "'Youtube' to visit the page. Otherwise say 'menu' if you'd like"
             puts "to return, or 'exit' if you'd like to quit."
     end
+    
 
     #it will provide the user with a list of options for the breweries returned by #list_breweries
     def menu
