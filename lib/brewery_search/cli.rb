@@ -50,9 +50,6 @@ class BrewerySearch::CLI
         @last_searched_state = input
             if VALID_STATES.include?(input)
                 list_breweries(input)
-            elsif
-                puts "Invalid entry received."
-                self.start
             elsif input == "exit"
                 self.quit
             elsif input == "BrewBound"
@@ -158,7 +155,7 @@ class BrewerySearch::CLI
         input = gets.strip
 
         #has to use @last_brew_list_searched in order to continue to use state specific results
-        if input.to_i > 0
+        if (input.to_i > 0) && (input.to_i <= @last_brew_list_searched.size)
             brewery = @last_brew_list_searched[input.to_i - 1]
             brewery.create_profile_attributes
           
@@ -205,7 +202,7 @@ class BrewerySearch::CLI
         input = gets.strip
 
         #has to utilize @last_city_list_searched in order to continue to use city specific results
-        if input.to_i > 0
+        if (input.to_i > 0) && (input.to_i <= @last_city_list_searched.size)
             brewery = @last_city_list_searched[input.to_i - 1]
             brewery.create_profile_attributes
           
@@ -214,16 +211,16 @@ class BrewerySearch::CLI
             input = gets.strip
                 if input == "Website"
                     Launchy.open("#{brewery.external_site}") {|exception| puts "Attempted to open #{brewery.external_site} but failed due to : #{exception}"}
-                    self.menu
+                    self.city_menu 
                 elsif input == "Facebook"
                     Launchy.open("#{brewery.facebook_link}") {|exception| puts "Attempted to open #{brewery.facebook_link} but failed due to : #{exception}"}
-                    self.menu
+                    self.city_menu 
                 elsif input == "Twitter"
                     Launchy.open("#{brewery.twitter_link}") {|exception| puts "Attempted to open #{brewery.twitter_link} but failed due to : #{exception}"}
-                    self.menu
+                    self.city_menu 
                 elsif input == "Instagram"
                     Launchy.open("#{brewery.insta_link}") {|exception| puts "Attempted to open #{brewery.insta_link} but failed due to : #{exception}"}
-                    self.menu
+                    self.city_menu 
                 elsif input == "Youtube"
                     Launchy.open("#{brewery.youtube_link}") {|exception| puts "Attempted to open #{brewery.youtube_link} but failed due to : #{exception}"}
                     self.city_menu 

@@ -4,6 +4,7 @@ class BrewerySearch::Brewery
 
     @@all = []
 
+    #creates a brewery entry for every result returned by the scraped state
     def self.create_from_state_scrape(input)
         search_state = BrewerySearch::Scraper.scrape_by_state(input)
         search_state.pages.each do |page|
@@ -25,22 +26,34 @@ class BrewerySearch::Brewery
     def create_profile_attributes
         profile = BrewerySearch::Scraper.scrape_by_profile(self.site_url)
         
-        if profile.css("div #overview dl dd")[0].text.include?("JOB")
-            self.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=+./, '')
+        #determining address based one one of several formats the site can use
+        if (profile.css("div #overview dl dd dt").text.include?("PARENT") || profile.css("div #overview dl dd dt").text.include?("Founded")) && !!profile.css("div #overview dl dd")[0].text.match(/[0-9]/) == true
+            self.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
+        elsif profile.css("div #overview dl dd dt").text.include?("PARENT") || profile.css("div #overview dl dd dt").text.include?("Founded")
+            self.address = profile.css("div #overview dl dd")[2].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
+        elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[0].text.match(/[0-9]/) == true
+            self.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
         else
-            self.address = profile.css("div #overview dl dd")[2].css("a").attr("href").text.gsub(/\bhttps:.*=+./, '')
+            self.address = profile.css("div #overview dl dd")[2].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
         end
 
-        if profile.css("div #overview dl dd")[0].text.include?("JOB")
+        #determining overview based on one of several formats the site can use
+        if (profile.css("div #overview dl dd dt").text.include?("PARENT") || profile.css("div #overview dl dd dt").text.include?("Founded")) && !!profile.css("div #overview dl dd")[0].text.match(/[0-9]/) == true
+            self.overview = profile.css("div #overview dl dd")[4].text
+        elsif profile.css("div #overview dl dd dt").text.include?("PARENT") || profile.css("div #overview dl dd dt").text.include?("Founded")
+            self.overview = profile.css("div #overview dl dd")[3].text
+        elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[0].text.match(/[0-9]/) == true
             self.overview = profile.css("div #overview dl dd")[4].text
         else
             self.overview = profile.css("div #overview dl dd")[3].text
         end
-        
+
+        #determine phone number
         if profile.css("div.contact dt")[1].text == "Phone"
             self.phone = profile.css("div.contact dd")[1].text
         end
 
+        #determine external website
         self.external_site = profile.css("div.contact a").attr("href").text
         
         #grab social media links depending on what they have available

@@ -24,13 +24,29 @@ Type the following to get started:
 
     $ brewery-search
 
-Follow the on-screen prompts to continue.
+A user will be greeted with a welcome screen. Follow the on-screen prompts to continue.
 
 Users will have the ability to search by state abbreviations (case senstitive). From there a user will be presented with a list of all registered breweries in that state. A user can call 
 
     $ city 
 
 to receive a prompt to filter by a specific city, otherwise they can select the number of any brewery for more information.
+
+Additional commands from the menu include:
+
+    $ new search
+    $ exit
+
+New search will bring the user back to the beginning to search for a different state. Exit will quit the program.
+
+When viewing additional information for any brewery, a user will be able to do any of the following commands (if that information is made available) to either launch the corresponding page, return, or exit the program:
+            
+    $ Website
+    $ Facebook
+    $ Twitter
+    $ Instagram
+    $ Menu
+    $ Exit
 
 ## Development
 

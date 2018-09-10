@@ -16,10 +16,11 @@ class BrewerySearch::Scraper
         
         page = 2
 
+        #all state search pages use same HTML format, user input for state abbreviation is injected
         doc = Nokogiri::HTML(open("https://www.brewbound.com/mvc/Breweries/state/#{input}?displayOutOfBiz=False"))
         state_object.pages << doc
 
-        #is able to scrape data from additional pages when applicable
+        #is able to scrape data from additional pages when applicable, all pages use same format for additional page results, # and user input are injected
         while doc.css("table.breweries-list tfoot p.text-center").text.include?("Next") do
             doc = Nokogiri::HTML(open("https://www.brewbound.com/mvc/Breweries/state/#{input}/page/#{page}?displayOutOfBiz=False"))
             state_object.pages << doc
