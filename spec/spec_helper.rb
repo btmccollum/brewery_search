@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'brewery_search'
+
 
 # require "bundler/setup"
 # require "brewery_search"

@@ -30,8 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "require_all", "~> 2.0"
   spec.add_development_dependency "nokogiri", "~> 1.8", ">= 1.8.4"
   spec.add_development_dependency "launchy", "~> 2.4", ">= 2.4.3"
-  
 end
