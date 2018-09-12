@@ -46,8 +46,8 @@ class BrewerySearch::Brewery
             self.overview = profile.css("div #overview dl dd")[3].text
         elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[0].text.match(/[0-9]/) == true
             self.overview = profile.css("div #overview dl dd")[4].text
-        elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[3].text.match(/[0-9]/) == true
-            self.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
+        elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[1].text.match(/[0-9]/) == true
+            self.overview = profile.css("div #overview dl dd")[4].text
         else
             self.overview = profile.css("div #overview dl dd")[3].text
         end
