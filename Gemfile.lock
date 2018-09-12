@@ -21,6 +21,7 @@ GEM
       method_source (~> 0.9.0)
     public_suffix (3.0.3)
     rake (10.5.0)
+    require_all (2.0.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -45,6 +46,7 @@ DEPENDENCIES
   nokogiri (~> 1.8, >= 1.8.4)
   pry (~> 0.11.3)
   rake (~> 10.0)
+  require_all (~> 2.0)
   rspec
 
 BUNDLED WITH

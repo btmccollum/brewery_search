@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "brewery_search"
+# require "brewery_search"
+require "./config/environment"
 
 require "irb"
 IRB.start(__FILE__)

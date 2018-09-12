@@ -1,10 +1,6 @@
 #CLI Controller
 class BrewerySearch::CLI
     VALID_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-    @last_searched_state = nil
-    @last_searched_city = nil
-    @last_brew_list_searched = nil
-    @last_city_list_searched = nil
 
     #launches the CLI and greets the user with a welcome screen, prompts user to enter a state to search
     def welcome_screen
@@ -43,22 +39,22 @@ class BrewerySearch::CLI
 
     def start
         input = nil
-
         puts "Please enter the abbreviation for the state you'd like to search: "
         
         input = gets.strip
         @last_searched_state = input
-            if VALID_STATES.include?(input)
-                list_breweries(input)
-            elsif input == "exit"
-                self.quit
-            elsif input == "BrewBound"
-                Launchy.open ("https://www.brewbound.com/")
-            else
-                puts "Invalid entry received."
-                self.start
-            end
-        self.menu    
+
+        if VALID_STATES.include?(input)
+            self.list_breweries(input)
+        elsif input == "exit"
+            self.quit
+        elsif input == "BrewBound"
+            Launchy.open ("https://www.brewbound.com/")
+        else
+            puts "Invalid entry received."
+            self.start
+        end
+      self.menu    
     end
 
     #it will return a list of breweries from the state specified by the user, in alphabetical order by Brewery name
@@ -69,7 +65,7 @@ class BrewerySearch::CLI
         if BrewerySearch::Scraper.all.any? {|entry| entry.state == input}
             state_listing = BrewerySearch::Brewery.all.select {|entry| entry.state == input}
             @last_brew_list_searched = state_listing
-        else
+        else 
             BrewerySearch::Brewery.create_from_state_scrape(input)
             state_listing = BrewerySearch::Brewery.all.select {|entry| entry.state == input}
             @last_brew_list_searched = state_listing
@@ -83,7 +79,6 @@ class BrewerySearch::CLI
     #will return a of breweries in the specified city
     def breweries_by_city
         input = nil
-
         puts "Please enter the name of the city you would like to filter by:"
         input = gets.strip
         
@@ -106,8 +101,8 @@ class BrewerySearch::CLI
 
     #usuable only from #menu, serves to correctly fork for state searches
     def state_result_call(input)
-            brewery = @last_brew_list_searched[input.to_i - 1]
-            self.ind_brewery_info(brewery)
+        brewery = @last_brew_list_searched[input.to_i - 1]
+        self.ind_brewery_info(brewery)
     end
 
     #usable only from #city_menu, serves to correctly fork for city searches
