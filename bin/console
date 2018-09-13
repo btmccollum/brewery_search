@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-# require "brewery_search"
+# require "bundler/setup"
 require "./config/environment"
 
 require "irb"
