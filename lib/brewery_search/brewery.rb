@@ -1,6 +1,5 @@
 class BrewerySearch::Brewery
-    attr_accessor :name, :city, :state, :address, :phone, :type, :overview, :site_url, :website_link, :facebook_link, :twitter_link, :instagram_link, :youtube_link
-    attr_reader :pages, :brewery_list
+    attr_accessor :name, :city, :state, :address, :phone, :type, :overview, :site_url, :website, :facebook, :twitter, :instagram, :youtube
 
     @@all = []
 

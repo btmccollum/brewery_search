@@ -1,6 +1,6 @@
-#CLI Controller
+require 'pry'
 class BrewerySearch::CLI
-    VALID_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+    VALID_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 
     #launches the CLI and greets the user with a welcome screen, prompts user to enter a state to search
     def welcome_screen
@@ -38,18 +38,17 @@ class BrewerySearch::CLI
     end
 
     def start
-        state_input = nil
-        puts "Please enter the abbreviation for the state you'd like to search: "
+        puts "Please enter the abbreviation for the state you'd like to search:"
         
-        state_input = gets.strip.upcase
-        @last_searched_state = state_input
-
-        if VALID_STATES.include?(state_input)
-            self.list_breweries(state_input)
-        elsif input.downcase == "exit"
+        @last_searched_state = gets.strip.upcase
+      
+        if VALID_STATES.include?(@last_searched_state)
+            self.list_breweries(@last_searched_state)
+        elsif @last_searched_state.downcase == "exit"
             self.quit
-        elsif input.downcase == "brewbound"
+        elsif @last_searched_state.downcase == "brewbound"
             Launchy.open("https://www.brewbound.com/")
+            self.start
         else
             puts "Invalid entry received."
             self.start
@@ -61,17 +60,15 @@ class BrewerySearch::CLI
     def list_breweries(state_input)
         #checking to ensure we have not already scraped the state being searched
         if BrewerySearch::Brewery.find_by_state(state_input) != []
-            @last_brew_list_searched = BrewerySearch::Brewery.find_by_state(state_input)
+            @last_search = BrewerySearch::Brewery.find_by_state(state_input)
         else 
             BrewerySearch::Scraper.scrape_state(state_input)
-            @last_brew_list_searched = BrewerySearch::Brewery.find_by_state(state_input)
+            @last_search = BrewerySearch::Brewery.find_by_state(state_input)
         end
-   
-        #to be used in validation check in #menu
-        @last_search = @last_brew_list_searched
 
         puts "Displaying results:"
-        @last_brew_list_searched.map.with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
+        puts ""
+        @last_search.each.with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
     end
 
     #will return a list of breweries in the specified city
@@ -80,57 +77,48 @@ class BrewerySearch::CLI
         puts "Please enter the name of the city you would like to filter by:"
         city_input = gets.strip.downcase.split.map{|word| word.capitalize}.join(' ')
         
-        @last_city_list_searched = BrewerySearch::Brewery.find_by_city(city_input)
-       
-        #to be used in validation check in #menu
-        @last_search = @last_city_list_searched
+        @last_search = BrewerySearch::Brewery.find_by_city(city_input)
 
         puts "Displaying results:"
-        @last_city_list_searched.map.with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
+        @last_search.each.with_index {|brewery, index| puts "#{index + 1}. #{brewery.name} -- #{brewery.city}, #{brewery.state} -- #{brewery.type != "" ? brewery.type : "N/A" }"}
 
         self.menu
     end
 
     #creates flow for allowing user to select a specific brewery and obtain additional info or take other actions
     def menu
-        puts "\nPlease enter the number of a brewery for additional information.\nYou can type 'new search' to search again or 'exit' to quit."
-        puts "If you would like to filter by a specific city, please type 'city'."
+        puts "\nPlease enter the number of a brewery for additional information."
+        puts "To see a specific city, enter 'city', or enter 'relist' to show results from the state again."
+        puts "Otherwise, you can enter 'new search' to search again or 'exit' to quit."
 
         input = nil
         input = gets.strip.downcase
 
-        #control flow for user input
-        if (input.to_i > 0) && (input.to_i <= @last_search.size)
-            brewery = @last_search[input.to_i - 1]
+        if (input.to_i > 0) && (input.to_i <= @last_search.size) #specific to a valid brewery selection
+            brewery = @last_search[input.to_i - 1]  #uses @last_search to determine if user is at state or city level and to present the correct brewery and options
 
             #checks to ensure the profile for the brewery being checked has not been scraped already
             brewery.address != nil ? brewery : BrewerySearch::Scraper.scrape_profile(brewery) 
-          
-            #implements logic based on user's current search path(state or city filter) to present the correct brewery and options
+        
+            #create display card for brewery
             self.ind_brewery_info(brewery)
 
-            #the #result_call above prompts the user for another input
             options_input = gets.strip.downcase
-                if options_input == "website"
-                    Launchy.open("#{brewery.website_link}") {|exception| puts "Attempted to open #{brewery.website_link} but failed due to : #{exception}"}
-                    self.menu 
-                elsif options_input == "facebook"
-                    Launchy.open("#{brewery.facebook_link}") {|exception| puts "Attempted to open #{brewery.facebook_link} but failed due to : #{exception}"}
-                    self.menu 
-                elsif options_input == "twitter"
-                    Launchy.open("#{brewery.twitter_link}") {|exception| puts "Attempted to open #{brewery.twitter_link} but failed due to : #{exception}"}
-                    self.menu 
-                elsif options_input == "instagram"
-                    Launchy.open("#{brewery.instagram_link}") {|exception| puts "Attempted to open #{brewery.instagram_link} but failed due to : #{exception}"}
-                    self.menu 
-                elsif options_input == "youtube"
-                    Launchy.open("#{brewery.youtube_link}") {|exception| puts "Attempted to open #{brewery.youtube_link} but failed due to : #{exception}"}
-                    self.menu 
+                #control flow specific to #ind_brewery_info result
+                if brewery.instance_variables.any? {|attr| "@#{options_input}" == attr.to_s}
+                    Launchy.open("#{brewery.send(options_input)}") {|exception| puts "Attempted to open #{brewery.send(options_input)} but failed due to : #{exception}"}
+                    self.menu
+                elsif options_input == "menu"
+                    self.menu
                 elsif options_input == "exit"
                     self.quit
                 else
+                    puts "Invalid entry received. Returning to menu."
                     self.menu
                 end
+        elsif input == "relist"
+            self.list_breweries(@last_searched_state)
+            self.menu
         elsif input == "new search"
             self.start
         elsif input == "city"
@@ -145,21 +133,21 @@ class BrewerySearch::CLI
 
     #returns an info sheet for a given brewery
     def ind_brewery_info(brewery)
-        puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
+        puts "\n*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
         puts "Brewery Name: #{brewery.name}"
         puts "Brewery Address: #{brewery.address != nil ? brewery.address : "N/A"}"
         puts "Brewery Location: #{brewery.city}, #{brewery.state}"
         puts "Brewery Phone #: #{brewery.phone != nil ? brewery.phone : "N/A"}"
         puts "Brewery Type: #{brewery.type != "" ? brewery.type : "N/A" }"
-        puts "Brewery Website: #{brewery.website_link != nil ? brewery.website_link : "N/A" }"
-        puts "Brewery Facebook: #{brewery.facebook_link != nil ? brewery.facebook_link : "N/A" }"
-        puts "Brewery Twitter: #{brewery.twitter_link != nil ? brewery.twitter_link : "N/A" }"
-        puts "Brewery Instagram: #{brewery.instagram_link != nil ? brewery.instagram_link : "N/A" }"
-        puts "Brewery Youtube: #{brewery.youtube_link != nil ? brewery.youtube_link  : "N/A" }"
+        puts "Brewery Website: #{brewery.website != nil ? brewery.website : "N/A" }"
+        puts "Brewery Facebook: #{brewery.facebook != nil ? brewery.facebook : "N/A" }"
+        puts "Brewery Twitter: #{brewery.twitter != nil ? brewery.twitter : "N/A" }"
+        puts "Brewery Instagram: #{brewery.instagram != nil ? brewery.instagram : "N/A" }"
+        puts "Brewery Youtube: #{brewery.youtube != nil ? brewery.youtube  : "N/A" }"
         puts ""
-        puts "Brewery Overview: #{brewery.overview}"
+        puts "Brewery Overview: #{brewery.overview.strip}"
         puts "*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*"
-        puts "You can say 'Website', 'Facebook', 'Twitter', 'Instagram', or"
+        puts "\nYou can say 'Website', 'Facebook', 'Twitter', 'Instagram', or"
         puts "'Youtube' to visit the page. Otherwise say 'menu' if you'd like"
         puts "to return, or 'exit' if you'd like to quit."
     end

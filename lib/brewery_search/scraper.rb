@@ -1,22 +1,22 @@
 class BrewerySearch::Scraper
     
     def self.scrape_state(state_input)
-        pages = []
+        search_result_pages = []
 
         doc = Nokogiri::HTML(open("https://www.brewbound.com/mvc/Breweries/state/#{state_input}?displayOutOfBiz=False"))
-        pages << doc
+        search_result_pages << doc
 
         #is able to scrape data from additional searrch result pages when applicable, all pages use same format for additional page 
         #results, and user input is injected into url
         page = 2
         while doc.css("table.breweries-list tfoot p.text-center").text.include?("Next") do
             doc = Nokogiri::HTML(open("https://www.brewbound.com/mvc/Breweries/state/#{state_input}/page/#{page}?displayOutOfBiz=False"))
-            pages << doc
+            search_result_pages << doc
             page += 1
         end 
 
         #instantiates a new Brewery object for each entry
-        pages.each do |additional_page|
+        search_result_pages.each do |additional_page|
             additional_page.css("table.breweries-list tbody tr").each do |tr|
                 new_brewery = BrewerySearch::Brewery.new
                 new_brewery.name = tr.css("td a.accented.hidden-mobile.bold").text.strip
@@ -42,6 +42,8 @@ class BrewerySearch::Scraper
             brewery.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
         elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[3].text.match(/[0-9]/) == true
             brewery.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
+        elsif profile.css("div #overview dl dt")[2].text.include?("TYPE")
+            brewery.address = profile.css("div #overview dl dd")[3].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
         else
             brewery.address = profile.css("div #overview dl dd")[2].css("a").attr("href").text.gsub(/\bhttps:.*=(?:,)?/, '')
         end
@@ -55,6 +57,8 @@ class BrewerySearch::Scraper
             brewery.overview = profile.css("div #overview dl dd")[4].text
         elsif profile.css("div #overview dl dd")[0].text.include?("JOB") && !!profile.css("div #overview dl dd")[1].text.match(/[0-9]/) == true
             brewery.overview = profile.css("div #overview dl dd")[4].text
+        elsif profile.css("div #overview dl dt")[2].text.include?("TYPE")
+            brewery.overview = profile.css("div #overview dl dd")[4].text
         else
             brewery.overview = profile.css("div #overview dl dd")[3].text
         end
@@ -65,18 +69,18 @@ class BrewerySearch::Scraper
         end
 
         #determine external website
-        brewery.website_link = profile.css("div.contact a").attr("href").text
+        brewery.website = profile.css("div.contact a").attr("href").text
         
         #grab social media links depending on what they have available
         social_media = profile.css("div.contact ul.brewer-social-media li").each do |social|
             if social.css("a").attr("href").text.include?("twitter")
-                brewery.twitter_link = social.css("a").attr("href").text
+                brewery.twitter = social.css("a").attr("href").text
             elsif social.css("a").attr("href").text.include?("facebook")
-                brewery.facebook_link = social.css("a").attr("href").text
+                brewery.facebook = social.css("a").attr("href").text
             elsif social.css("a").attr("href").text.include?("instagram")
-                brewery.instagram_link = social.css("a").attr("href").text
+                brewery.instagram = social.css("a").attr("href").text
             elsif social.css("a").attr("href").text.include?("youtube")
-                brewery.youtube_link = social.css("a").attr("href").text
+                brewery.youtube = social.css("a").attr("href").text
             end
         end
     end
