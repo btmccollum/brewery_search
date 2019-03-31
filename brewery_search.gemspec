@@ -1,10 +1,10 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "brewery_search/version"
+# require "brewery_search/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "brewery_search"
-  spec.version       = BrewerySearch::VERSION
+  spec.version       = "0.1.7"
   spec.authors       = ["btmccollum"]
   spec.email         = ["btmcco8@gmail.com"]
 
