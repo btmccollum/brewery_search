@@ -6,17 +6,7 @@ Get information on any brewery from your command line with the Brewery Search ge
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'brewery_search'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install the gem with the following: 
 
     $ gem install brewery_search
 
