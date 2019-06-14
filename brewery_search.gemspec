@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["btmcco8@gmail.com"]
 
   spec.summary       = "A CLI brewery directory leveraging BrewBound"
-  spec.description   = "Allows a user to search for breweries by state by utilizing the www.brewbound.com brewery database. Results will be returned as a numbered list. Contains a welcome screen upon launch and will have several prompts for a user to follow."
+  spec.description   = "Search for breweries from the convenience of your command line! Install the gem and then type 'brewery-search' to get started. Follow the onscreen instructions to check out breweries in any state, and even filter results by city! Enjoy!"
   spec.homepage      = "https://github.com/btmccollum/brewery_search"
   spec.license       = "MIT"
 
