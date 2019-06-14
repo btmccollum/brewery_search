@@ -1,4 +1,5 @@
-require "./config/environment"
+require "bundler/setup"
+require "brewery_search"
 
 require "irb"
 IRB.start(__FILE__)

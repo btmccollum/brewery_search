@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    brewery_search (0.1.8)
+    brewery_search (0.1.82)
       launchy (~> 2.4, >= 2.4.3)
       nokogiri (~> 1.8, >= 1.8.4)
 

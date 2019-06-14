@@ -1,3 +1,7 @@
+    
+require 'nokogiri'
+require 'open-uri'
+
 class BrewerySearch::Scraper
     
     def self.scrape_state(state_input)
