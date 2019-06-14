@@ -1,6 +1,8 @@
 # BrewerySearch
 
-BrewerySearch provides a CLI that allows a user to navigate BrewBound's brewery database and retrieve additional information such as contact information, social media links, general overview, and more.
+Check out a short demo of Brewery Search here: https://youtu.be/N-bYzJwY2uY  
+
+Get information on any brewery from your command line with the Brewery Search gem! Brewery Search allows you to search in any state, and even filter down to a specific city. Check it out at: https://rubygems.org/gems/brewery_search
 
 ## Installation
 
