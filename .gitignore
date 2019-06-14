@@ -7,4 +7,4 @@
 /pkg/
 /spec
 /tmp/
-/*.gem
+*.gem
